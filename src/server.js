@@ -1,4 +1,7 @@
 import express from "express";
+import cronUpdateProducts from "./cron.js";
+
+cronUpdateProducts();
 
 const app = express();
 
