@@ -1,5 +1,6 @@
 import express from "express";
 import cronUpdateProducts from "./cron.js";
+import getMemoryUsage from "./util/getMemory_usage.js";
 
 cronUpdateProducts();
 
@@ -9,7 +10,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
-  res.send("Aew Galerinha que assiste meu Canal");
+  const memory = getMemoryUsage();
+  res.send(memory);
 });
 
 const port = process.env.PORT || 3000;
