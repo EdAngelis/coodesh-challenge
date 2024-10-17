@@ -19,13 +19,13 @@ async function selectObjectsFromJson(filePath, limit) {
       const data = JSON.parse(line);
 
       const product = {
-        code: data.code,
+        code: parseInt(data.code),
         status: "draft",
         imported_t: Date.now(),
         url: data.url,
         creator: data.creator,
-        created_t: data.created_t,
-        last_modified_t: data.last_modified_t,
+        created_t: new Date(data.created_t),
+        last_modified_t: new Date(data.last_modified_t),
         product_name: data.product_name,
         quantity: data.quantity,
         brands: data.brands,
@@ -37,8 +37,8 @@ async function selectObjectsFromJson(filePath, limit) {
         ingredients_text: data.ingredients_text,
         traces: data.traces,
         serving_size: data.serving_size,
-        serving_quantity: data.serving_quantity,
-        nutriscore_score: data.nutriscore_score,
+        serving_quantity: parseInt(data.serving_quantity),
+        nutriscore_score: parseInt(data.nutriscore_score),
         nutriscore_grade: data.nutriscore_grade,
         main_category: data.main_category,
         image_url: data.image_url,
