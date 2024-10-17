@@ -16,4 +16,6 @@ try {
 }
 let db = conn.db("open-food-facts");
 
+await db.collection("products").createIndex({ code: 1 });
+
 export default db;
