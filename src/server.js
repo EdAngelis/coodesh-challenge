@@ -1,10 +1,18 @@
 import cronUpdateProducts from "./cron.js";
 import getMemoryUsage from "./util/getMemory_usage.js";
 import app from "./app.js";
+import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
+import path from "path";
 
+const absolutePath = path.resolve();
+
+const swaggerDocument = YAML.load(path.join(absolutePath, "docs/api.yml"));
 cronUpdateProducts();
 
 const port = process.env.PORT || 3000;
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get("/", (req, res) => {
   const memory = getMemoryUsage();
