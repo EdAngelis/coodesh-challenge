@@ -3,4 +3,190 @@ info:
   title: DotNet Challenge 20200902
   description: CRUD Products
   version: '0.1'
+paths:
+  /products:
+    get:
+      summary: Retrieve a list of products
+      responses:
+        '200':
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+
+  /products/{code}:
+    get:
+      summary: Retrieve a product by its code
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: integer
+          description: The unique product code
+      responses:
+        '200':
+          description: A single product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+
+    delete:
+      summary: Delete a product by its code
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: integer
+          description: The unique product code
+      responses:
+        '204':
+          description: Product successfully deleted
+        '404':
+          description: Product not found
+
+    put:
+      summary: Update a product by its code
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: integer
+          description: The unique product code
+      requestBody:
+        description: Product details to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdate'
+      responses:
+        '200':
+          description: Product successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Unique product code
+        status:
+          type: string
+          description: Status of the product (e.g., published, draft)
+        imported_t:
+          type: string
+          format: date-time
+          description: Date and time when the product was imported
+        url:
+          type: string
+          format: uri
+          description: URL to the product page
+        creator:
+          type: string
+          description: Name of the product creator
+        created_t:
+          type: integer
+          description: UNIX timestamp when the product was created
+        last_modified_t:
+          type: integer
+          description: UNIX timestamp when the product was last modified
+        product_name:
+          type: string
+          description: Name of the product
+        quantity:
+          type: string
+          description: Quantity and packaging details
+        brands:
+          type: string
+          description: Brands associated with the product
+        categories:
+          type: string
+          description: Categories the product belongs to
+        labels:
+          type: string
+          description: Labels related to allergens or other attributes
+        cities:
+          type: string
+          description: Cities where the product is available (can be empty)
+        purchase_places:
+          type: string
+          description: Places where the product was purchased
+        stores:
+          type: string
+          description: Stores where the product is sold
+        ingredients_text:
+          type: string
+          description: Text describing the ingredients
+        traces:
+          type: string
+          description: Traces of allergens present in the product
+        serving_size:
+          type: string
+          description: The size of one serving
+        serving_quantity:
+          type: number
+          description: Quantity per serving (in grams)
+        nutriscore_score:
+          type: integer
+          description: Nutriscore score of the product
+        nutriscore_grade:
+          type: string
+          description: Nutriscore grade (e.g., a, b, c, d, e)
+        main_category:
+          type: string
+          description: The main category of the product
+        image_url:
+          type: string
+          format: uri
+          description: URL to the product image
+
+    ProductUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+        product_name:
+          type: string
+        quantity:
+          type: string
+        brands:
+          type: string
+        categories:
+          type: string
+        labels:
+          type: string
+        stores:
+          type: string
+        ingredients_text:
+          type: string
+        traces:
+          type: string
+        serving_size:
+          type: string
+        serving_quantity:
+          type: number
+        nutriscore_score:
+          type: integer
+        nutriscore_grade:
+          type: string
+        image_url:
+          type: string
+          format: uri
+
 
