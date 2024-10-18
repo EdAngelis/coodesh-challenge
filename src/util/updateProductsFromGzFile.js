@@ -1,5 +1,6 @@
 import getNObjectsFromJson from "./getNObjectsFromJson.js";
 import deleteFiles from "./deleteFiles.js";
+import { insertCronLog } from "../db/SQLite.js";
 import zlib from "zlib";
 import fs from "fs";
 
@@ -25,6 +26,7 @@ function updateProductsFromGzFile(source, destination, db) {
         type: "products_updated",
         descritpion: `Last time products were updated`,
       });
+      insertCronLog();
 
       await deleteFiles(source);
       await deleteFiles(destination);
