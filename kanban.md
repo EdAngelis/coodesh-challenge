@@ -2,7 +2,6 @@
 
 ## BACKLOG
 
-- **Diferencial 2** Configurar Docker no Projeto para facilitar o Deploy da equipe de DevOps;
 - **Diferencial 3** Configurar um sistema de alerta se tem algum falho durante o Sync dos produtos;
 - criar mongodb validação para collection products
 - **Diferencial 1** Configuração de um endpoint de busca com Elastic Search ou similares;
@@ -10,6 +9,8 @@
 
 ## DONE
 
+- **Diferencial 2** Configurar Docker no Projeto para facilitar o Deploy da equipe de DevOps;
+- setup SQLite to avoid unnecessary requests to the database
 - Retornar dados na rota padrão / ( Conexão com Database, Ultima execução do Cron, Tempo Online e uso de memoria)
 - Salvar dados de importação em uma collection
 - Adcionar arquivo de configuraçães
