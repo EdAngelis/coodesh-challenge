@@ -5,12 +5,13 @@ import {
   getProduct,
   softDelete,
 } from "../controller/products.controller.js";
+import apiKeyCheck from "../middlewares/api-key.js";
 
 const router = express.Router();
 
-router.put("/:code", updateProduct);
-router.get("/", getProducts);
-router.get("/:code", getProduct);
-router.put("/delete/:code", softDelete);
+router.put("/:code", apiKeyCheck, updateProduct);
+router.get("/", apiKeyCheck, getProducts);
+router.get("/:code", apiKeyCheck, getProduct);
+router.put("/delete/:code", apiKeyCheck, softDelete);
 
 export default router;
