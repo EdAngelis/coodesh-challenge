@@ -16,5 +16,5 @@ try {
 let db = conn.db("open-food-facts");
 
 await db.collection("products").createIndex({ code: 1 });
-
+await db.collection("logs").createIndex({ date: -1 });
 export default db;
