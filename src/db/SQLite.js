@@ -5,7 +5,7 @@ export const sqlite = () => {
     const db = new DatabaseSync("db.sqlite");
 
     db.exec(`
-    create table if not exists cron (
+    create table if not exists cronLog (
          id integer primary key AUTOINCREMENT, 
          type text not null, 
          date date not null
@@ -21,7 +21,7 @@ export const insertCronLog = () => {
   try {
     const db = new DatabaseSync("db.sqlite");
     const stmt = db.prepare(`
-        INSERT OR REPLACE INTO logs (id, type, date) VALUES (?, ?, ?)
+        INSERT OR REPLACE INTO cronLog (id, type, date) VALUES (?, ?, ?)
       `);
 
     const date = new Date().toISOString();
@@ -38,7 +38,7 @@ export const selectCronLog = () => {
   try {
     const db = new DatabaseSync("db.sqlite");
     const stmt = db.prepare(`
-            SELECT * FROM logs WHERE id = ?
+            SELECT * FROM cronLog WHERE id = ?
         `);
 
     const logs = stmt.all(1);
