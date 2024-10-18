@@ -5,8 +5,11 @@ import getMemoryUsage from "./util/getMemory_usage.js";
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 import path from "path";
-import db from "./db.js";
+import db from "./db/db.js";
 import serverOnlineTime from "./util/serverOnlineTime.js";
+import { sqlite, selectCronLog } from "./db/SQLite.js";
+
+sqlite();
 
 const serverStartTime = new Date();
 const absolutePath = path.resolve();
@@ -19,12 +22,14 @@ const port = config.port;
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get("/", async (req, res) => {
-  const lastCronExecution = await db
-    .collection("logs")
-    .find({ type: "products_updated" })
-    .sort({ date: -1 })
-    .limit(1)
-    .toArray();
+  const lastCronExecution =
+    selectCronLog() ||
+    (await db
+      .collection("logs")
+      .find({ type: "products_updated" })
+      .sort({ date: -1 })
+      .limit(1)
+      .toArray());
   const dbDetails = await db.command({ dbStats: 1 });
   const memory = getMemoryUsage();
 
