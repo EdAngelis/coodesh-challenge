@@ -1,6 +1,6 @@
 import updateProductsFromGzFile from "../util/updateProductsFromGzFile.js";
 import axios from "axios";
-import db from "../db.js";
+import db from "../db/db.js";
 
 import fs from "fs";
 
