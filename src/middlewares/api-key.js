@@ -1,6 +1,6 @@
-import "dotenv/config";
+import config from "../config/config.js";
 
-const API_KEY = process.env.API_KEY || "my-api-key";
+const API_KEY = config.api_key;
 
 const checkApiKey = (req, res, next) => {
   const apiKey = req.headers["x-api-key"];

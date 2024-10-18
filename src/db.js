@@ -1,8 +1,7 @@
 import { MongoClient } from "mongodb";
+import config from "./config/config.js";
 
-const connectionString =
-  process.env.DB_URI ||
-  "mongodb+srv://ed4ngelis:SZpg5yyAWAaaVPx0@cluster0.ku49w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const connectionString = config.db_uri;
 
 const client = new MongoClient(connectionString);
 
