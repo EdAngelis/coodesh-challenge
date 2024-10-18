@@ -12,12 +12,11 @@ export const updateProduct = async (req, res) => {
       { $set: product },
       { new: true }
     );
-
-    if (!updatedProduct) {
+    if (updatedProduct.matchedCount === 0) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    res.status(200).json(updatedProduct, { message: "Product updated" });
+    res.status(200).json({ message: "Product updated" });
   } catch (error) {
     console.error(error);
     res.status(400).json({ message: error.message });
@@ -34,7 +33,6 @@ export const getProducts = async (req, res) => {
       .skip((page - 1) * pageSize)
       .limit(pageSize)
       .toArray();
-
     res.status(200).json(products);
   } catch (error) {
     console.error(error);
@@ -45,9 +43,7 @@ export const getProducts = async (req, res) => {
 export const getProduct = async (req, res) => {
   try {
     const { code } = req.params;
-
     const product = await collection.findOne({ code: parseInt(code) });
-
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
@@ -68,7 +64,7 @@ export const softDelete = async (req, res) => {
       { $set: { status: "trash" } }
     );
 
-    if (!deletedProduct) {
+    if (updatedProduct.matchedCount === 0) {
       return res.status(404).json({ message: "Product not found" });
     }
 
