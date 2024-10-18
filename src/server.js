@@ -5,7 +5,10 @@ import getMemoryUsage from "./util/getMemory_usage.js";
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 import path from "path";
+import db from "./db.js";
+import serverOnlineTime from "./util/serverOnlineTime.js";
 
+const serverStartTime = new Date();
 const absolutePath = path.resolve();
 
 const swaggerDocument = YAML.load(path.join(absolutePath, "docs/api.yml"));
@@ -15,9 +18,22 @@ const port = config.port;
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+  const lastCronExecution = await db
+    .collection("logs")
+    .find({ type: "products_updated" })
+    .sort({ date: -1 })
+    .limit(1)
+    .toArray();
+  const dbDetails = await db.command({ dbStats: 1 });
   const memory = getMemoryUsage();
-  res.send(memory);
+
+  res.status(200).json({
+    uso_de_memoria: memory.rss,
+    database_name: dbDetails.db,
+    cron_ultima_execucao: lastCronExecution[0].date,
+    tempo_online_da_api: serverOnlineTime(),
+  });
 });
 
 app.listen(port, () => {
