@@ -19,6 +19,13 @@ function updateProductsFromGzFile(source, destination, db) {
       console.log("Products Updated");
 
       await collection.insertMany(products);
+
+      const salveLog = await db.collection("logs").insertOne({
+        date: new Date(),
+        type: "products_updated",
+        descritpion: `Last time products were updated`,
+      });
+
       await deleteFiles(source);
       await deleteFiles(destination);
 
