@@ -2,7 +2,7 @@ import { expect } from "chai";
 import sinon from "sinon";
 import request from "supertest";
 import app from "../src/app.js";
-import repository, { update } from "../src/repository/product.repository.js";
+import repository from "../src/repository/product.repository.js";
 import { ObjectId } from "mongodb";
 
 describe("GET PUT /products", () => {
@@ -14,6 +14,10 @@ describe("GET PUT /products", () => {
 
   afterEach(() => {
     sinon.restore();
+  });
+
+  after(() => {
+    process.exit(0);
   });
 
   it("should return One Product", async () => {

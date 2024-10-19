@@ -1,6 +1,5 @@
 import updateProductsFromGzFile from "../util/updateProductsFromGzFile.js";
 import axios from "axios";
-import db from "../db/db.js";
 
 import fs from "fs";
 
@@ -30,7 +29,7 @@ const updateProducts = async () => {
       const source = `./${file}`;
       const destination = `./${fileName}.json`;
 
-      await updateProductsFromGzFile(source, destination, db);
+      await updateProductsFromGzFile(source, destination);
     }
   } catch (error) {
     console.error(error);

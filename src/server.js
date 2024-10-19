@@ -5,16 +5,17 @@ import getMemoryUsage from "./util/getMemory_usage.js";
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 import path from "path";
-import db from "./db/db.js";
+import startModels, { Logs } from "./models/index.js";
 import serverOnlineTime from "./util/serverOnlineTime.js";
 import { sqlite, selectCronLog } from "./db/SQLite.js";
 
 sqlite();
+const db = startModels();
 
-const serverStartTime = new Date();
 const absolutePath = path.resolve();
 
 const swaggerDocument = YAML.load(path.join(absolutePath, "docs/api.yml"));
+
 cronUpdateProducts();
 
 const port = config.port;
@@ -24,9 +25,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get("/", async (req, res) => {
   const lastCronExecution =
     selectCronLog() ||
-    (await db
-      .collection("logs")
-      .find({ type: "products_updated" })
+    (await Logs.find({ type: "products_updated" })
       .sort({ date: -1 })
       .limit(1)
       .toArray());
