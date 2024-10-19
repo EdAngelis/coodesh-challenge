@@ -1,16 +1,11 @@
-import {
-  fetchAll,
-  fetch,
-  update,
-  softDelete,
-} from "../repository/product.repository.js";
+import repository from "../repository/product.repository.js";
 
 export const updateProduct = async (req, res) => {
   try {
     const { code } = req.params;
     const product = req.body;
 
-    const response = await update(code, product);
+    const response = await repository.update(code, product);
 
     if (response.matchedCount === 0) {
       return res.status(404).json({ message: "Product not found" });
@@ -24,11 +19,12 @@ export const updateProduct = async (req, res) => {
 };
 
 export const getProducts = async (req, res) => {
+  console.log("getProducts");
   const page = parseInt(req.query.page) || 1;
   const pageSize = parseInt(req.query.pageSize) || 10;
 
   try {
-    const products = await fetchAll(page, pageSize);
+    const products = await repository.fetchAll(page, pageSize);
 
     if (products.length === 0)
       return res.status(404).json({ message: "Products not found" });
@@ -43,7 +39,7 @@ export const getProducts = async (req, res) => {
 export const getProduct = async (req, res) => {
   try {
     const { code } = req.params;
-    const product = await fetch(code);
+    const product = await repository.fetch(code);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
@@ -59,7 +55,7 @@ export const remove = async (req, res) => {
   try {
     const { code } = req.params;
 
-    const response = await softDelete(code);
+    const response = await repository.softDelete(code);
 
     if (response.matchedCount === 0) {
       return res.status(404).json({ message: "Product not found" });

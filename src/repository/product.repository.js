@@ -27,3 +27,10 @@ export const softDelete = async (code) => {
     { $set: { status: "trash" } }
   );
 };
+
+export default {
+  fetchAll,
+  fetch,
+  update,
+  softDelete,
+};
