@@ -1,5 +1,6 @@
 import { MongoClient } from "mongodb";
 import config from "../config/config.js";
+import models from "../models/index.js";
 
 const connectionString = config.db_uri;
 
@@ -15,6 +16,7 @@ try {
 }
 let db = conn.db("open-food-facts");
 
-await db.collection("products").createIndex({ code: 1 });
+models(db);
+
 await db.collection("logs").createIndex({ date: -1 });
 export default db;
