@@ -35,11 +35,21 @@ app.get("/", async (req, res) => {
   res.status(200).json({
     uso_de_memoria: memory.rss,
     database_name: dbDetails.db,
-    cron_ultima_execucao: lastCronExecution[0].date,
+    cron_ultima_execucao: lastCronExecution[0].date || "Ainda não executado",
     tempo_online_da_api: serverOnlineTime(),
   });
 });
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  throw new Error("Unhandled Rejection at:", promise, "reason:", reason);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("There was an uncaught error", err);
+  throw new Error("Uncaught Exception thrown", err);
 });
