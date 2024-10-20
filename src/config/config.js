@@ -7,7 +7,7 @@ const config = {
   cron_time: process.env.CRON_TIME || "0 5 * * *",
   port: process.env.PORT || 3000,
   api_key: process.env.API_KEY || "my-api-key",
-  cron_first_time: process.env.CRON_FIRST_TIME || true,
+  cron_first_time: process.env.CRON_FIRST_TIME || false,
 };
 
 export default config;
