@@ -13,15 +13,8 @@ export const elasticSearch = async (req, res) => {
   try {
     const result = await client.search({
       index: elastic_index,
-      body: {
-        query: {
-          match: {
-            field_name: query,
-          },
-        },
-      },
+      q: query,
     });
-
     res.status(200).json(result.hits.hits);
   } catch (error) {
     console.error("Elasticsearch search error:", error);
