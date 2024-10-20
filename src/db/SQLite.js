@@ -13,7 +13,7 @@ export const sqlite = () => {
 
     if (db) db.close();
   } catch (error) {
-    console.error(error);
+    throw new Error(error);
   }
 };
 
@@ -30,7 +30,7 @@ export const insertCronLog = () => {
 
     console.log(`Inserted contact id: ${lastInsertRowid}`);
   } catch (error) {
-    console.error(error);
+    throw new Error(error);
   }
 };
 
@@ -43,6 +43,6 @@ export const selectCronLog = () => {
 
     const logs = stmt.all(1);
   } catch (error) {
-    console.error(error);
+    throw new Error(error);
   }
 };

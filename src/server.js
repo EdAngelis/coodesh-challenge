@@ -45,11 +45,9 @@ app.listen(port, () => {
 });
 
 process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled Rejection at:", promise, "reason:", reason);
   throw new Error("Unhandled Rejection at:", promise, "reason:", reason);
 });
 
 process.on("uncaughtException", (err) => {
-  console.error("There was an uncaught error", err);
   throw new Error("Uncaught Exception thrown", err);
 });

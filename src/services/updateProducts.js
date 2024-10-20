@@ -32,7 +32,7 @@ const updateProducts = async () => {
       await updateProductsFromGzFile(source, destination);
     }
   } catch (error) {
-    console.error(error);
+    throw new Error(error.message);
   }
 };
 

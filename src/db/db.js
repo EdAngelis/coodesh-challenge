@@ -11,7 +11,7 @@ try {
   conn = await client.connect();
   console.log("Connected to the database");
 } catch (e) {
-  console.error(e);
+  throw new Error("Error connecting to the database");
 }
 let db = conn.db("open-food-facts");
 

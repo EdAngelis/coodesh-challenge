@@ -1,6 +1,6 @@
 import fs from "fs";
 import readline from "readline";
-import formatProductObjectFromJson from "./jsonToProductObject.js";
+import formatProductObjectFromJson from "./jsonToProduct.js";
 
 async function selectObjectsFromJson(filePath, limit) {
   const objects = [];
@@ -24,7 +24,7 @@ async function selectObjectsFromJson(filePath, limit) {
       objects.push(product);
       count++;
     } catch (err) {
-      console.error(`Error parsing line: ${err}`);
+      throw new Error("Error parsing JSON", err);
     }
   }
   return objects;
