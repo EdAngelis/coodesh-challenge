@@ -101,6 +101,23 @@ paths:
           description: Product successfully deleted
         '404':
           description: Product not found
+  /elastic:
+    get:
+      summary: Search in Elasticsearch
+      parameters:
+        - in: query
+          name: query
+          required: true
+          schema:
+            type: string
+          description: The search query
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
 components:
   schemas:
     Product:
