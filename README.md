@@ -1,89 +1,138 @@
-# Backend Challenge 20230105
+# API do projeto Fitness Foods LC
 
 ## Introdução
 
-Nesse desafio trabalharemos no desenvolvimento de uma REST API para utilizar os dados do projeto Open Food Facts, que é um banco de dados aberto com informação nutricional de diversos produtos alimentícios.
+A API desenvolvida para o projeto Fitness Foods LC tem como objetivo auxiliar a equipe de nutricionistas da empresa a revisar rapidamente as informações nutricionais dos alimentos que os usuários submetem pela aplicação móvel.
 
-O projeto tem como objetivo dar suporte a equipe de nutricionistas da empresa Fitness Foods LC para que eles possam revisar de maneira rápida a informação nutricional dos alimentos que os usuários publicam pela aplicação móvel.
+A API utiliza a base de dados da Open Food Facts para armazenar em nosso banco de dados informações nutricionais dos produtos, permitindo consultas personalizadas e edições diretas.
 
-### Antes de começar
- 
-- O projeto deve utilizar a Linguagem específica na avaliação. Por exempo: Python, R, Scala e entre outras;
-- Considere como deadline da avaliação a partir do início do teste. Caso tenha sido convidado a realizar o teste e não seja possível concluir dentro deste período, avise a pessoa que o convidou para receber instruções sobre o que fazer.
-- Documentar todo o processo de investigação para o desenvolvimento da atividade (README.md no seu repositório); os resultados destas tarefas são tão importantes do que o seu processo de pensamento e decisões à medida que as completa, por isso tente documentar e apresentar os seus hipóteses e decisões na medida do possível.
+### Tecnologias
 
-## O projeto
- 
-- Criar um banco de dados MongoDB usando Atlas: https://www.mongodb.com/cloud/atlas ou algum Banco de Dados SQL se não sentir confortável com NoSQL;
-- Criar uma REST API com as melhores práticas de desenvolvimento, Design Patterns, SOLID e DDD.
-- Integrar a API com o banco de dados criado para persistir os dados
-- Recomendável usar Drivers oficiais para integração com o DB
-- Desenvolver Testes Unitários
+A api foi construída utilizando
 
-### Modelo de Dados:
+- Node (22.9.0)
+- express
+- MongoDB
+- Elastic
 
-Para a definição do modelo, consultar o arquivo [products.json](./products.json) que foi exportado do Open Food Facts, um detalhe importante é que temos dois campos personalizados para poder fazer o controle interno do sistema e que deverão ser aplicados em todos os alimentos no momento da importação, os campos são:
+#### Outras Ferramentas e Bibliotecas
 
-- `imported_t`: campo do tipo Date com a dia e hora que foi importado;
-- `status`: campo do tipo Enum com os possíveis valores draft, trash e published;
+- axios: Para chamadas HTTP
+
+- mailersend: Para envio de Notificação
+
+- swagger-ui-express: Para realizar chamadas nos end-points diretamente pelo browser
+
+E para realizar os testes
+
+- chai
+- mocha
+- supertest
+- sinon
+
+### Inicializando a API
+
+#### Apenas com Node
+
+1. Instale as dependências:
+
+``` bash
+npm install
+```
+
+2. Inicie a API:
+
+``` bash
+npm run start
+```
+
+#### Executando com Docker
+
+1. Construa e inicie o container
+
+```terminal
+docker-compose up --build
+```
+
+Para executar através de um container é preciso ter o Docker instalado no seu pc.
+Em ambos os casos a api estará disponível através do endereço [http://localhost:3000](http://localhost:3000)
 
 ### Sistema do CRON
 
-Para prosseguir com o desafio, precisaremos criar na API um sistema de atualização que vai importar os dados para a Base de Dados com a versão mais recente do [Open Food Facts](https://br.openfoodfacts.org/data) uma vez ao día. Adicionar aos arquivos de configuração o melhor horário para executar a importação.
+Quando a Api é iniciada ela chama uma função cron que é executada 1 vez por dia as 5:00 am ou em um intervalo determinado externamente através da variável de ambiente CRON_TIME.
 
-A lista de arquivos do Open Food, pode ser encontrada em: 
+``` .env
+CRON_TIME="* * 8 * * *"
+```
 
-- https://challenges.coode.sh/food/data/json/index.txt
-- https://challenges.coode.sh/food/data/json/data-fields.txt
+A função cron realiza uma chamada para API da Open Food Facts, realizando o download dos arquivos zipados que contem os json com os dados nutricionais dos produtos, extraímos os dados dos produtos e salvamos em nosso Banco de Dados sempre que a função cron é chamada.
 
-Onde cada linha representa um arquivo que está disponível em https://challenges.coode.sh/food/data/json/{filename}.
+Quando a API é inicializada a função que baixa os arquivos da base de dados da Open Food Facts é executada inicialmente, e só é executada novamente no intervalo determinado, caso queira evitar essa primeira execução quando a API é inicializada, basta alterar a propriedade cron_first_time no arquivo config.js para false, ou configurar a variável de ambiente CRON_FIRST_TIME como false.
 
-É recomendável utilizar uma Collection secundária para controlar os históricos das importações e facilitar a validação durante a execução.
-
-Ter em conta que:
-
-- Todos os produtos deverão ter os campos personalizados `imported_t` e `status`.
-- Limitar a importação a somente 100 produtos de cada arquivo.
+```.env
+CRON_FIRST_TIME=false
+```
 
 ### A REST API
 
-Na REST API teremos um CRUD com os seguintes endpoints:
+Os end-points da API estão documentados no arquivo docs/api.yml e pode ser visualizado no browser através da rota /api-docs, utilizando o swaggerUi junto com o api.yml, podemos realizar requests e testar os end-points diretamente através do browser.
 
- - `GET /`: Detalhes da API, se conexão leitura e escritura com a base de dados está OK, horário da última vez que o CRON foi executado, tempo online e uso de memória.
- - `PUT /products/:code`: Será responsável por receber atualizações do Projeto Web
- - `DELETE /products/:code`: Mudar o status do produto para `trash`
- - `GET /products/:code`: Obter a informação somente de um produto da base de dados
- - `GET /products`: Listar todos os produtos da base de dados, adicionar sistema de paginação para não sobrecarregar o `REQUEST`.
+- API-KEY:
 
-## Extras
+Para fazer uma chamada para as rotas é preciso enviar o header x-api-key com o valor da API-KEY, o valor da API-KEY pode ser configurado diretamente através do arquivo de configuração config.js ou externamente através da variável de ambiente API_KEY.
 
-- **Diferencial 1** Configuração de um endpoint de busca com Elastic Search ou similares;
-- **Diferencial 2** Configurar Docker no Projeto para facilitar o Deploy da equipe de DevOps;
-- **Diferencial 3** Configurar um sistema de alerta se tem algum falho durante o Sync dos produtos;
-- **Diferencial 4** Descrever a documentação da API utilizando o conceito de Open API 3.0;
-- **Diferencial 5** Escrever Unit Tests para os endpoints  GET e PUT do CRUD;
-- **Diferencial 6** Escrever um esquema de segurança utilizando `API KEY` nos endpoints. Ref: https://learning.postman.com/docs/sending-requests/authorization/#api-key
+``` 
+API_KEY="my-api-key"
+```
 
+### TESTES
 
+Para rodar os tests, basta executar no terminal:
 
-## Readme do Repositório
+```bash
+npm run test
+```
 
-- Deve conter o título do projeto
-- Uma descrição sobre o projeto em frase
-- Deve conter uma lista com linguagem, framework e/ou tecnologias usadas
-- Como instalar e usar o projeto (instruções)
-- Não esqueça o [.gitignore](https://www.toptal.com/developers/gitignore)
-- Se está usando github pessoal, referencie que é um challenge by coodesh:  
+### E-MAIL DE NOTIFICAÇÃO
 
->  This is a challenge by [Coodesh](https://coodesh.com/)
+Para configurar um e-mail para receber as notificações de falha, forneça um e-mail valido no arquivo de configuração, usando a propriedade notification_recipient_email:
 
-## Finalização e Instruções para a Apresentação
+```javascript
+notification_recipient_email: "seuemail@aqui.com"
+```
 
-1. Adicione o link do repositório com a sua solução no teste
-2. Adicione o link da apresentação do seu projeto no README.md.
-3. Verifique se o Readme está bom e faça o commit final em seu repositório;
-4. Envie e aguarde as instruções para seguir. Sucesso e boa sorte. =)
+ou configure um email externamente usando a variável de ambiente NOTIFICATION_RECIPIENT_EMAIL
 
-## Suporte
+```
+NOTIFICATION_RECIPIENT_EMAIL=seuemail@aqui.com
+```
 
-Use a [nossa comunidade](https://discord.gg/rdXbEvjsWu) para tirar dúvidas sobre o processo ou envie uma mensagem diretamente a um especialista no chat da plataforma. 
+Caso queira simular um erro, você pode alterar a url da Open Food Facts, usando um url invalida, então um erro será lançado e você receberá a notificação no e-mail fornecido.
+
+### ELASTIC SEARCH
+
+Podemos fazer busca através do end-point **/elastic?query=query**, que utiliza o Elastic Search como mecanismo de busca, a aplicação sincroniza em tempo real o Elastic Search com nosso banco de dados no Mongodb Atlas, sempre que um documento é inserido, modificado ou deletado, caso queira sincronizar todo banco com o Elastic Search quando a aplicação é iniciada, basta inserir uma variável de ambiente com o nome SYNC_ELASTIC, com o valor de true, ou alterar a propriedade sync_elastic no arquivo de configuração config.js para true.
+
+O valor que queira buscar deve vir inserido como uma query de valor query, como no exemplo:
+
+```
+elastic?query=food
+```
+
+### CONSIDERAÇÕES
+
+- URI Banco de Dados
+
+Criei um Banco no Mongodb Atlas e deixei a URI já configurada no projeto apenas pra facilitar a inicialização e o uso da API.
+
+- SQLite
+
+Optei pelo uso do SQLite para guardar em paralelo os dados de execução do cron, pra economizar requisições caso a rota padrão fosse usada para monitorar a saúde da api em tempo real, para esse projeto em questão o SQLite poderia ser substituído por apenas uma variável global, mas optei pelo uso do SQLite pois queria testar essa nova feature do Node.
+
+- Tests
+
+Optei por realizar apenas 1 teste para cada rota, testei apenas em caso de sucesso, sei que numa situação real muitas outras situações deveriam ser testadas, usei o supertest para realizar request para as rotas e o sinon para simular respostas das funções que se conectam ao banco de dados, não havendo a necessidade assim de estabelecer conexão com o banco durante os testes.
+
+[Link De Apresentação]()
+
+This is a challenge by [Coodesh](https://coodesh.com/)
