@@ -3,6 +3,7 @@ import "dotenv/config";
 const mode = process.env.NODE_ENV || "development";
 
 const cronFirstTime = process.env.CRON_FIRST_TIME === "true";
+const syncElastic = process.env.SYNC_ELASTIC === "true";
 
 const config = {
   development: {
@@ -23,6 +24,7 @@ const config = {
     elastic_node:
       process.env.ELASTIC_NODE ||
       "https://84a7e3858a7643829e1d4c2ac4c128ca.us-central1.gcp.cloud.es.io:443",
+    sync_elastic: syncElastic,
   },
   production: {
     db_uri: process.env.DB_URI,
@@ -34,6 +36,7 @@ const config = {
     elastic_index: process.env.ELASTIC_INDEX,
     elastic_api_key: process.env.ELASTIC_API_KEY,
     elastic_node: process.env.ELASTIC_NODE,
+    sync_elastic: syncElastic,
   },
 };
 

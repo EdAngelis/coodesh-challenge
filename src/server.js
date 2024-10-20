@@ -5,18 +5,18 @@ import getMemoryUsage from "./util/getMemory_usage.js";
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 import path from "path";
-import startModels, { Logs } from "./models/index.js";
+import startModels, { Logs, Products } from "./models/index.js";
 import serverOnlineTime from "./util/serverOnlineTime.js";
 import { sqlite, selectCronLog } from "./db/SQLite.js";
+import syncMongoAndElastic from "./db/sync_mongodb_and_elastic.js";
 
 sqlite();
 const db = startModels();
+syncMongoAndElastic(Products, config.elastic_index);
+cronUpdateProducts();
 
 const absolutePath = path.resolve();
-
 const swaggerDocument = YAML.load(path.join(absolutePath, "docs/api.yml"));
-
-cronUpdateProducts();
 
 const port = config.port;
 
