@@ -1,4 +1,5 @@
 import updateProductsFromGzFile from "../util/updateProductsFromGzFile.js";
+import sendNotification from "./send_notification.js";
 import axios from "axios";
 
 import fs from "fs";
@@ -8,31 +9,25 @@ const updateProducts = async () => {
     const filesTitles = await axios.get(
       "https://challenges.coode.sh/food/data/json/index.txt"
     );
-
     const filesTitlesToArray = filesTitles.data
       .split("\n")
       .filter((file) => file !== "");
-
     const downloadPromises = filesTitlesToArray.map((file) => {
       const outputPath = `./${file}`;
       const url = `https://challenges.coode.sh/food/data/json/${file}`;
       return downloadFile(url, outputPath);
     });
-
     await Promise.all(downloadPromises);
-
     console.log("Files Downloaded");
-
     for await (const file of filesTitlesToArray) {
       const fileName = file.split(".")[0];
-
       const source = `./${file}`;
       const destination = `./${fileName}.json`;
-
       await updateProductsFromGzFile(source, destination);
     }
   } catch (error) {
-    throw new Error(error.message);
+    await sendNotification(error);
+    throw new Error(error);
   }
 };
 
