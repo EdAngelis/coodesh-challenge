@@ -8,30 +8,27 @@ const model = async (db, collectionName) => {
       validator: {
         $jsonSchema: {
           bsonType: "object",
-          required: ["code", "status", "imported_t"],
           properties: {
             code: {
-              bsonType: "int",
+              bsonType: ["int", "double"],
             },
             status: {
               bsonType: "string",
-              enum: ["published", "draft", "trash"],
             },
             imported_t: {
               bsonType: "date",
             },
             url: {
               bsonType: "string",
-              pattern: "^https?://",
             },
             creator: {
               bsonType: "string",
             },
             created_t: {
-              bsonType: "int",
+              bsonType: ["int", "double"],
             },
             last_modified_t: {
-              bsonType: "int",
+              bsonType: ["int", "double"],
             },
             product_name: {
               bsonType: "string",
@@ -67,21 +64,19 @@ const model = async (db, collectionName) => {
               bsonType: "string",
             },
             serving_quantity: {
-              bsonType: "double",
+              bsonType: ["int", "double"],
             },
             nutriscore_score: {
-              bsonType: "int",
+              bsonType: ["int", "double"],
             },
             nutriscore_grade: {
               bsonType: "string",
-              enum: ["a", "b", "c", "d", "e"],
             },
             main_category: {
               bsonType: "string",
             },
             image_url: {
               bsonType: "string",
-              pattern: "^https?://",
             },
           },
         },
