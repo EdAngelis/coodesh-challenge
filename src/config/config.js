@@ -2,6 +2,8 @@ import "dotenv/config";
 
 const mode = process.env.NODE_ENV || "development";
 
+const cronFirstTime = process.env.CRON_FIRST_TIME === "true";
+
 const config = {
   development: {
     db_uri:
@@ -10,7 +12,7 @@ const config = {
     cron_time: process.env.CRON_TIME || "0 5 * * *",
     port: process.env.PORT || 3000,
     api_key: process.env.API_KEY || "my-api-key",
-    cron_first_time: process.env.CRON_FIRST_TIME || false,
+    cron_first_time: cronFirstTime,
     notification_recipient_email:
       process.env.NOTIFICATION_RECIPIENT_EMAIL || "",
   },
@@ -19,7 +21,7 @@ const config = {
     cron_time: process.env.CRON_TIME,
     port: process.env.PORT,
     api_key: process.env.API_KEY,
-    cron_first_time: process.env.CRON_FIRST_TIME,
+    cron_first_time: cronFirstTime,
     notification_recipient_email:
       process.env.NOTIFICATION_RECIPIENT_EMAIL || "",
   },
